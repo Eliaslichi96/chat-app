@@ -9,7 +9,7 @@ import {
     Image,
 } from "react-native";
 
-// Define the Start component
+// Define the Start componen
 const Start = ({ navigation }) => {
     // State to hold the name input value
     const [name, setName] = useState("");
