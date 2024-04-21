@@ -7,9 +7,6 @@ A simple chat application built with React Native and React Navigation.
 - Choose a username and background color.
 - Start chatting with a personalized background.
 
-## Screenshots
-
-[Include screenshots or GIFs of your application here]
 
 ## Prerequisites
 
