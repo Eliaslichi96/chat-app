@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { getAuth, signInAnonymously } from "firebase/auth";
 
+const date = new Date()
 // Define the Start componen
 const Start = ({ navigation }) => {
     const auth = getAuth();
@@ -98,7 +99,11 @@ const Start = ({ navigation }) => {
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() =>
-                        navigation.navigate("Chat", { name: name, background: background })
+                        navigation.navigate("Chat", {
+                            name: name,
+                            background: background,
+                            userID: name,
+                        })
                     }
                 >
                     <Text style={styles.textButton}>Start Chatting</Text>
