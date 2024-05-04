@@ -1,200 +1,149 @@
-import { useState } from "react";
-import {
-    StyleSheet,
-    View,
-    Text,
-    TouchableOpacity,
-    TextInput,
-    ImageBackground,
-    KeyboardAvoidingView,
-    Platform,
-    Alert
-} from 'react-native';
+import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import { useState } from 'react';
+
+//import for authentication
 import { getAuth, signInAnonymously } from "firebase/auth";
 
-const date = new Date()
-// Define the Start componen
+
 const Start = ({ navigation }) => {
+
+    //authentication
     const auth = getAuth();
-    // State to hold the name input value
-    const [name, setName] = useState("");
-    // State to hold the chosen background color
-    const [background, setBackground] = useState("");
 
     const signInUser = () => {
-        signInAnonymously(auth)
-            .then(result => {
-                navigation.navigate("Chat", {
-                    name: name,
-                    background: background,
-                    userID: result.user.uid
-                });
-                Alert.alert("Signed in Successfully!");
-            })
-            .catch((error) => {
-                Alert.alert("Unable to sign in, try later again.");
-            })
+        signInAnonymously(auth).then(result => {
+            navigation.navigate("Chat", { userID: result.user.uid, name: name, color: color });
+            Alert.alert("Signed in Successfully!")
+        }).catch((error) => {
+            Alert.alert("Unable to sign in, try again later.");
+        })
     }
+
+    const [name, setName] = useState('');
+    const [color, setColor] = useState('');
+
     return (
-        <ImageBackground
-            source={require("../img/BackgroundImage.png")}
-            style={styles.imageBackground}
-            resizeMode="cover"
-        >
-            <Text style={styles.appTitle}>Bienvenido</Text>
-            <View style={styles.container}>
-                <TextInput
-                    style={styles.textInput}
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Your Name"
-                ></TextInput>
-
-                <View style={styles.chooseColorBox}>
-                    <Text style={styles.chooseColorText}>Choose Background Color:</Text>
-                    <View style={styles.colorButtonsContainer}>
-                        {/* Render a TouchableOpacity for each color option */}
-                        <TouchableOpacity
-                            accessible={true}
-                            accessibilityLabel="More options"
-                            accessibilityHint="Lets you choose to send an image or your geolocation."
-                            accessibilityRole="button"
-                            style={[
-                                styles.chooseColor,
-                                { backgroundColor: "#090C08" },
-                                background === "#090C08" && styles.selectedColor,
-                            ]}
-                            // Set the function to handle button press
-                            onPress={signInUser}>
-                            <Text style={styles.buttonText}>Start Chatting</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[
-                                styles.chooseColor,
-                                { backgroundColor: "#474056" },
-                                background === "#474056" && styles.selectedColor,
-                            ]}
-                            onPress={() => setBackground("#474056")}
-                        ></TouchableOpacity>
-                        <TouchableOpacity
-                            style={[
-                                styles.chooseColor,
-                                { backgroundColor: "#8A95A5" },
-                                background === "#8A95A5" && styles.selectedColor,
-                            ]}
-                            onPress={() => setBackground("#8A95A5")}
-                        ></TouchableOpacity>
-                        <TouchableOpacity
-                            style={[
-                                styles.chooseColor,
-                                { backgroundColor: "#B9C6AE" },
-                                background === "#B9C6AE" && styles.selectedColor,
-                            ]}
-                            onPress={() => setBackground("#B9C6AE")}
-                        ></TouchableOpacity>
+        <View style={styles.container}>
+            <ImageBackground style={styles.backgroundImage} source={require('../assets/background-image.png')}>
+                <Text style={styles.appTitle}>Chat App</Text>
+                <View style={styles.infoBox}>
+                    <View style={styles.textInput}>
+                        <TextInput
+                            value={name}
+                            onChangeText={setName}
+                            placeholder='Your name'
+                        />
                     </View>
+                    <Text style={styles.chooseColor}>Choose Background Color:</Text>
+                    <View style={styles.sampleContainer}>
+                        <TouchableOpacity onPress={() => setColor('#090c08')} style={styles.colorSample}></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setColor('#474056')} style={[styles.colorSample, styles.sampleTwo]}></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setColor('#8A95A5')} style={[styles.colorSample, styles.sampleThree]}></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setColor('#B9C6AE')} style={[styles.colorSample, styles.sampleFour]}></TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.chatButton}
+                        onPress={() => { { signInUser() } }}
+                    >
+                        <Text style={styles.buttonText}>Start Chatting</Text>
+                    </TouchableOpacity>
                 </View>
+            </ImageBackground>
+        </View>
+    )
+}
 
-                {/* Render a TouchableOpacity for starting the chat */}
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={() =>
-                        navigation.navigate("Chat", {
-                            name: name,
-                            background: background,
-                            userID: name,
-                        })
-                    }
-                >
-                    <Text style={styles.textButton}>Start Chatting</Text>
-                </TouchableOpacity>
-            </View>
-            {Platform.OS === "android" ? (
-                <KeyboardAvoidingView behavior="height" />
-            ) : null}
-        </ImageBackground>
-    );
-};
-
-// Define styles for the component
 const styles = StyleSheet.create({
-    imageBackground: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    appTitle: {
-        flex: 1,
-        fontSize: 45,
-        fontWeight: "600",
-        color: "#ffffff",
-        justifyContent: "center",
-        marginTop: 80,
-    },
     container: {
-        width: "88%",
-        height: "44%",
-        backgroundColor: "white",
-        alignItems: "center",
-        marginBottom: 30,
-        justifyContent: "space-evenly",
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-
     textInput: {
         width: "88%",
         padding: 15,
-        borderWidth: 1,
+        borderWidth: 2,
+        borderColor: '#757083',
+        marginTop: 15,
+        marginBottom: 15,
         fontSize: 16,
-        fontWeight: "300",
-        color: "#757083",
+        fontWeight: '300',
+        color: '#757083',
         opacity: 0.5,
-        borderColor: "#757083",
+        borderRadius: 3,
+        display: 'flex',
+        flexDirection: 'row'
+
     },
-    button: {
-        width: "88%",
-        height: "20%",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#757083",
-        padding: 10,
+    appTitle: {
+        fontSize: 45,
+        fontWeight: '600',
+        color: '#FFFFFF',
+        marginTop: 50
     },
-    textButton: {
-        fontSize: 16,
-        fontWeight: "600",
-        color: "#ffffff",
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-    chooseColorBox: {
-        width: "88%",
-        height: "20%",
-        alignItems: "center",
-        justifyContent: "space-between",
-    },
-    colorButtonsContainer: {
-        flexDirection: "row",
-        alignSelf: "flex-start",
-        justifyContent: "space-between",
+    infoBox: {
+        backgroundColor: '#FFFFFF',
+        height: '44%',
+        width: '88%',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+        marginTop: 200
     },
     chooseColor: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        border: 3,
-        marginRight: 15,
-        borderColor: "white",
+        fontSize: 16,
+        fontWeight: '300',
+        color: '#757083',
+        opacity: 0.8,
+        width: '88%',
+        marginBottom: 10
+
     },
-    selectedColor: {
-        borderColor: "#FCD95B",
-        borderWidth: 3,
+    colorSample: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#090c08',
+        marginRight: 20
+    },
+    sampleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        width: '88%'
+    },
+    sampleTwo: {
+        backgroundColor: '#474056'
+    },
+    sampleThree: {
+        backgroundColor: '#8A95A5'
+    },
+    sampleFour: {
+        backgroundColor: '#B9C6AE'
     },
 
-    chooseColorText: {
-        flex: 1,
-        fontSize: 16,
-        fontWeight: "300",
-        color: "#757083",
-        textAlign: "left",
-        alignSelf: "flex-start",
+    chatButton: {
+        height: 60,
+        width: '88%',
+        backgroundColor: '#757083',
+        marginTop: 15,
+        marginBottom: 15,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
-});
+    buttonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#FFFFFF'
+    },
+    icon: {
+        color: '#757083',
+        backgroundColor: 'black'
+    }
+})
 
 export default Start;
